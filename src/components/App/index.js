@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.scss";
 
+import { Array1DTracer } from "apis";
 import { AlgsList, ChartRender, InputData } from "components";
 import { randomArr } from "common/utils";
 import { PLAYER_SETTINGS } from "common/settings";
@@ -8,13 +9,11 @@ import { PLAYER_SETTINGS } from "common/settings";
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.randomArr1 = randomArr();
-    this.randomArr2 = [...this.randomArr1];
-    this.randomArr2[0] = 1;
-    this.steps = [this.randomArr1, this.randomArr2];
+    this.unsortedArr = randomArr();
+    this.tracer = new Array1DTracer(this.unsortedArr);
 
     this.state = {
-      currentStep: this.steps[0],
+      currentStep: this.tracer.steps[0],
       currentStepIndex: 0,
       speed: PLAYER_SETTINGS.speed,
       playing: false,
@@ -22,7 +21,6 @@ class App extends React.Component {
     };
 
     this.handleBuildCode = this.handleBuildCode.bind(this);
-    this.handleStartCode = this.handleStartCode.bind(this);
 
     this.setStep = this.setStep.bind(this);
     this.setSpeed = this.setSpeed.bind(this);
@@ -35,23 +33,19 @@ class App extends React.Component {
   handleBuildCode = ace => {
     let codeText = ace.editor.getValue();
     try {
+      this.setState({building: true});
       // eslint-disable-next-line no-new-func
-      let funcFromCode = new Function("arrSorting", codeText);
-      let newStepsArr = funcFromCode(this.steps[0]);
-      if (!(Array.isArray(newStepsArr) && newStepsArr.length))
-        throw Error("Invalid array");
-      this.steps = newStepsArr;
-      this.setState({ currentStepIndex: 0 });
+      let funcFromCode = new Function("tracer", "D", codeText);
+      funcFromCode(this.tracer, this.unsortedArr);
+      this.setState({ currentStepIndex: 0, building: false });
     } catch (e) {
       console.error(e.message);
     }
   };
 
-  handleStartCode = () => {};
-
   setStep(i) {
     this.setState({
-      currentStep: this.steps[i],
+      currentStep: this.tracer.steps[i],
       currentStepIndex: i
     });
   }
@@ -62,7 +56,7 @@ class App extends React.Component {
 
   next() {
     this.pause();
-    if (this.state.currentStepIndex >= this.steps.length - 1) return false;
+    if (this.state.currentStepIndex >= this.tracer.steps.length - 1) return false;
     this.setStep(this.state.currentStepIndex + 1);
     return true;
   }
@@ -103,8 +97,13 @@ class App extends React.Component {
         />
         <InputData
           handleBuildCode={this.handleBuildCode}
-          handleStartCode={this.handleStartCode}
+          speed={this.state.speed}
+          currentStepIndex={this.state.currentStepIndex}
+          stepsCount={this.tracer.steps.length}
+          setSpeed={this.setSpeed}
+          setStep={this.setStep}
           resume={this.resume}
+          pause={this.pause}
           prev={this.prev}
           playing={this.state.playing}
           building={this.state.building}

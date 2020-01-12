@@ -59,16 +59,16 @@ class ChartRender extends React.Component {
         >
           <Layer>
             {this.props.currentStep.map((item, curr) => {
-              let barHeight = item * this.barPieceHeight;
+              let barHeight = item.value * this.barPieceHeight;
               return (
                 <Rect
-                  key={item.toString() + "~" + curr.toString()}
+                  key={item.value.toString() + "~" + curr.toString()}
                   x={curr * (this.barWidth + CHART_SETTINGS.barPadding)}
                   y={CHART_SETTINGS.height - barHeight}
                   width={this.barWidth}
                   height={barHeight}
-                  fill="black"
-                  item={item}
+                  fill={item.patched?"red":item.selected?"blue":"black"}
+                  item={item.value}
                   onMouseOver={this.handleBarOver}
                   onMouseOut={this.handleBarOut}
                 ></Rect>
