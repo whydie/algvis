@@ -9,45 +9,22 @@ class ChartRender extends React.Component {
   constructor(props) {
     super(props);
 
-    this.barWidth = Math.floor(
-      (CHART_SETTINGS.width -
-        CHART_SETTINGS.barPadding * this.props.currentStep.length) /
-        this.props.currentStep.length
-    );
     this.barPieceHeight = Math.floor(
       CHART_SETTINGS.height / this.props.currentStep.length
     );
 
-    this.barWidthHalf = Math.floor(this.barWidth / 2);
-    this.barpopup = document.getElementById("barpopup");
-
     this.stageRef = React.createRef();
-
-    this.handleBarOver = this.handleBarOver.bind(this);
   }
 
   shouldComponentUpdate(nextProps) {
-    return this.props.currentStepIndex !== nextProps.currentStepIndex;
+    return (
+      this.props.currentStepIndex !== nextProps.currentStepIndex ||
+      this.props.playing !== nextProps.playing ||
+      this.props.builded !== nextProps.builded ||
+      this.props.currentStepIndex !== nextProps.currentStepIndex ||
+      this.props.speed !== nextProps.speed
+    );
   }
-
-  handleBarOver = e => {
-    this.barpopup.innerHTML = e.target.attrs.item;
-    this.barpopup.style.display = "block";
-
-    var pophalf = Math.floor(this.barpopup.clientWidth / 2);
-    this.barpopup.style.left =
-      this.stageRef.current.content.offsetLeft +
-      (e.target.attrs.x + this.barWidthHalf - pophalf) +
-      "px";
-    this.barpopup.style.top =
-      this.stageRef.current.content.offsetTop +
-      (e.target.attrs.y - this.barpopup.clientHeight) +
-      "px";
-  };
-
-  handleBarOut = () => {
-    this.barpopup.style.display = "none";
-  };
 
   render() {
     return (
@@ -63,19 +40,52 @@ class ChartRender extends React.Component {
               return (
                 <Rect
                   key={item.value.toString() + "~" + curr.toString()}
-                  x={curr * (this.barWidth + CHART_SETTINGS.barPadding)}
+                  x={curr * (20)}
                   y={CHART_SETTINGS.height - barHeight}
-                  width={this.barWidth}
+                  width={5}
                   height={barHeight}
-                  fill={item.patched?"red":item.selected?"blue":"black"}
+                  fill={item.patched ? "#FF417B" : item.selected ? "#6641FF" : "white"}
                   item={item.value}
                   onMouseOver={this.handleBarOver}
                   onMouseOut={this.handleBarOut}
+                  cornerRadius={10}
                 ></Rect>
               );
             })}
           </Layer>
         </Stage>
+        <div className="charts-btns">
+          <button
+            disabled={this.props.builded}
+            onClick={this.props.handleBuildCode}
+          >
+            {this.props.builded ? "Builded" : "Build"}
+          </button>
+          <button
+            disabled={!this.props.builded}
+            onClick={this.props.playing ? this.props.pause : this.props.resume}
+          >
+            {this.props.playing ? "Pause" : "Start"}
+          </button>
+
+          <input
+            type="range"
+            onChange={e => this.props.setSpeed(e.target.value)}
+            value={this.props.speed}
+            min="1"
+            max="10"
+          ></input>
+
+          <input
+            type="range"
+            onChange={e =>
+              this.props.setStep(Number.parseInt(e.target.value) - 1)
+            }
+            value={this.props.currentStepIndex}
+            min="1"
+            max={this.props.stepsCount}
+          ></input>
+        </div>
       </div>
     );
   }

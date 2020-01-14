@@ -1,0 +1,12 @@
+@import "~common/_variables.scss";
+
+.charts {
+    width: $chartsblock-width;
+    height: 100vh;
+    float: left;
+    background: $charts-bg;
+
+    .konvajs-content {
+        margin: 0 auto;
+    }
+}

@@ -1,0 +1,21 @@
+@import "~common/_variables.scss";
+
+.algs {
+    width: $algsblock-width;
+    height: 100vh;
+    float: left;
+    background: #141414;
+
+    .algs-list {
+        list-style: none;
+        padding: 0 0 0 30px;
+
+        .algs-list__item {
+            margin-bottom: 30px;
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+}

@@ -4,7 +4,7 @@ import "./App.scss";
 import { Array1DTracer } from "apis";
 import { AlgsList, ChartRender, InputData } from "components";
 import { randomArr } from "common/utils";
-import { PLAYER_SETTINGS } from "common/settings";
+import { PLAYER_SETTINGS, DEFAULT_ALGS, DEFAULT_ALG } from "common/settings";
 
 class App extends React.Component {
   constructor(props) {
@@ -17,10 +17,11 @@ class App extends React.Component {
       currentStepIndex: 0,
       speed: PLAYER_SETTINGS.speed,
       playing: false,
-      building: false
+      builded: false
     };
 
     this.handleBuildCode = this.handleBuildCode.bind(this);
+    this.handleSetAlg = this.handleSetAlg.bind(this);
 
     this.setStep = this.setStep.bind(this);
     this.setSpeed = this.setSpeed.bind(this);
@@ -30,17 +31,30 @@ class App extends React.Component {
     this.pause = this.pause.bind(this);
   }
 
-  handleBuildCode = ace => {
-    let codeText = ace.editor.getValue();
+  componentDidMount() {
+    this.handleSetAlg(DEFAULT_ALG);
+  }
+
+  handleBuildCode = () => {
+    let codeText = window.AceEditor.editor.getValue();
     try {
-      this.setState({building: true});
       // eslint-disable-next-line no-new-func
-      let funcFromCode = new Function("tracer", "D", codeText);
+      let funcFromCode = new Function("tracer", "arr", codeText);
       funcFromCode(this.tracer, this.unsortedArr);
-      this.setState({ currentStepIndex: 0, building: false });
+      this.setState({ currentStepIndex: 0, builded: true });
     } catch (e) {
       console.error(e.message);
     }
+  };
+
+  handleSetAlg = alg => {
+    window.AceEditor.editor.setValue(DEFAULT_ALGS[alg], 1);
+    this.setState({ currentAlgTitle: alg });
+    this.handleBuildCode();
+  };
+
+  handleEditorChange = () => {
+    this.setState({ builded: false, playing: false });
   };
 
   setStep(i) {
@@ -56,7 +70,8 @@ class App extends React.Component {
 
   next() {
     this.pause();
-    if (this.state.currentStepIndex >= this.tracer.steps.length - 1) return false;
+    if (this.state.currentStepIndex >= this.tracer.steps.length - 1)
+      return false;
     this.setStep(this.state.currentStepIndex + 1);
     return true;
   }
@@ -88,17 +103,15 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <AlgsList changeAlg={this.changeAlg} />
-        <ChartRender
-          playing={this.state.playing}
-          building={this.state.building}
-          currentStep={this.state.currentStep}
-          currentStepIndex={this.state.currentStepIndex}
+        <AlgsList
+          currentAlgTitle={this.state.currentAlgTitle}
+          handleSetAlg={this.handleSetAlg}
         />
-        <InputData
+        <ChartRender
           handleBuildCode={this.handleBuildCode}
           speed={this.state.speed}
           currentStepIndex={this.state.currentStepIndex}
+          currentStep={this.state.currentStep}
           stepsCount={this.tracer.steps.length}
           setSpeed={this.setSpeed}
           setStep={this.setStep}
@@ -106,8 +119,9 @@ class App extends React.Component {
           pause={this.pause}
           prev={this.prev}
           playing={this.state.playing}
-          building={this.state.building}
+          builded={this.state.builded}
         />
+        <InputData handleEditorChange={this.handleEditorChange} />
       </div>
     );
   }

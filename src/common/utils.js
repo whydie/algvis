@@ -8,7 +8,7 @@ function shuffleArr(array) {
 }
 
 function randomArr(from, to) {
-  let arr = []
+  let arr = [];
 
   for (let i = from || 1; i <= ((to - from) || ARR_LENGTH); ++i) {
       arr.push(i);
