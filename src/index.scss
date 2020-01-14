@@ -1,16 +1,24 @@
 @import "~common/_variables.scss";
 
+@font-face {
+  font-family: 'PFDinMono';
+  font-weight: normal;
+  src: local('PFDinMono'), url(./fonts/PFDinMono-Regular.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'PFDinMono';
+  font-weight: 300;
+  src: local('PFDinMono'), url(./fonts/PFDinMono-Light.ttf) format('truetype');
+}
+
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: 'PFDinMono';
+  font-weight: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: $text-color;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+  
 }

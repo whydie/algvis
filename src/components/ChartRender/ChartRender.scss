@@ -1,12 +1,150 @@
 @import "~common/_variables.scss";
 
 .charts {
-    width: $chartsblock-width;
-    height: 100vh;
-    float: left;
-    background: $charts-bg;
+  width: $chartsblock-width;
+  height: 100vh;
+  float: left;
+  background: $charts-bg;
+
+  .charts-convas {
+    height: 80%;
+    overflow: hidden;
 
     .konvajs-content {
-        margin: 0 auto;
+      margin: 100px auto 0;
     }
+  }
+
+  .charts-btns-wrapper {
+    background: $charts-btns-bg;
+    position: relative;
+    height: 20%;
+
+    .charts-btns {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 740px;
+
+      input,
+      button {
+        vertical-align: middle;
+        margin: 0;
+        border: none;
+        outline: none;
+      }
+
+      .charts-btns__btn {
+        background: transparent;
+        position: relative;
+        color: $text-color;
+        cursor: pointer;
+        font-size: 14px;
+        margin-right: 20px;
+        width: 55px;
+
+        &:before {
+          display: block;
+          content: "";
+          background-size: contain;
+          position: absolute;
+          top: 3px;
+          left: -10px;
+          width: 12px;
+          height: 12px;
+        }
+      }
+
+      .charts-btns__btn_start {
+        &:before {
+          background-image: url(/imgs/pause.png);
+          background-image: url(/imgs/play.png);
+        }
+      }
+      .charts-btns__btn_pause {
+        &:before {
+          background-image: url(/imgs/play.png);
+          background-image: url(/imgs/pause.png);
+        }
+      }
+      .charts-btns__btn_stop {
+        &:before {
+          background-image: url(/imgs/stop.png);
+        }
+      }
+      .charts-btns__btn_checkmark {
+        cursor: default;
+        &:before {
+          background-image: url(/imgs/checkmark.png);
+          width: 18px;
+          height: 18px;
+          top: 0;
+          left: -15px;
+        }
+      }
+
+      input[type="range"] {
+        width: 100%;
+        height: 5px;
+        -webkit-appearance: none;
+        appearance: none;
+        background: $input-bg;
+        border-radius: 8px;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 13px;
+        height: 13px;
+        background: #fff;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      input[type="range"]::-moz-range-thumb {
+        width: 13px;
+        height: 13px;
+        background: #fff;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      .charts-btns__longrangewrap {
+        position: relative;
+        display: inline-block;
+        margin-left: 105px;
+        width: 200px;
+
+        .charts-btns__longrangetitle {
+          position: absolute;
+          top: -15px;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: 12px;
+          font-weight: 300;
+        }
+      }
+
+      .charts-btns__rangewrap {
+        margin-left: 100px;
+        width: 180px;
+        display: inline-block;
+
+        .charts-btns__rangelbl {
+          font-weight: 300;
+          font-size: 12px;
+        }
+
+        .charts-btns__rangeinnerwrap {
+          display: inline-block;
+          width: 120px;
+
+          .charts-btns__range {
+            margin-left: 15px;
+          }
+        }
+      }
+    }
+  }
 }

@@ -1,7 +1,10 @@
 const CHART_SETTINGS = {
   width: 600,
-  height: 500,
-  barPadding: 5,
+  height: 300,
+  offsetX: 10,
+  barPadding: 30,
+  barWidth: 5,
+  barRadius: 10,
   barMult: 5
 };
 
